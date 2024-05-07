@@ -1,209 +1,331 @@
-import { useState, useEffect } from "react"; 
-import axios from "axios"; 
-import { baseUrl } from "../../context/AuthContext"; 
- 
-import { Link } from "react-router-dom"; 
-export default function Users() { 
-    const [users, setUsers] = useState([]); 
-    const [searchEmail, setSearchEmail] = useState(""); 
- 
-    const getUsers = () => { 
-        axios 
-            .get(`${baseUrl}/users/list`, { 
-                params: { 
-                    email: searchEmail, 
-                }, 
-            }) 
-            .then((res) => { 
-                setUsers(res.data); 
-            }) 
-            .catch((error) => { 
-                console.error("Error sending data: ", error); 
-            }); 
-    }; 
- 
-    const deleteUser = (userId) => { 
-        axios 
-            .delete(`${baseUrl}/users/${userId}`, {}) 
-            .then(() => { 
-                getUsers(); 
-            }) 
-            .catch((error) => { 
-                alert("Failed", "delete unsuccesfull!"); 
-                console.error("Error delete data: ", error); 
-            }); 
-    }; 
- 
-    useEffect(() => { 
-        getUsers(); 
-    }, []); 
- 
-    const handleSubmit = (event) => { 
-        console.log(searchEmail); 
-        event.preventDefault(); 
-        getUsers(); 
-    }; 
- 
-    return ( 
-        <> 
-            <div className="flex flex-wrap mt-4"> 
-                <div className="w-full mb-12 px-4"> 
-                    <div className="relative flex flex-col min-w-0 break-words w-full mb-0 shadow
-lg rounded-lg bg-blueGray-200 border-0"> 
-                        <div className="rounded-t px-6 py-2"> 
-                            <div className="text-center"> 
-                                <h6 className="text-blueGray-500 text-sm font-bold"> 
-                                    Search Form 
-                                </h6> 
-                            </div> 
- 
-                            <hr className="mt-2 border-b-1 border-blueGray-300" /> 
-                        </div> 
-                        <div className="flex-auto px-4 lg:px-10 py-10 pt-0"> 
-                            <form onSubmit={handleSubmit}> 
-                                <div className="relative w-full "> 
-                                    <label 
-                                        className="block uppercase text-blueGray-600 text-xs font
-bold mb-2" 
-                                        htmlFor="grid-password" 
-                                    > 
-                                        Email 
-                                    </label> 
-                                    <input 
-                                        type="text" 
-                                        className="border-0 px-2 py-2 placeholder-blueGray-300 
-text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear 
-transition-all duration-150" 
-                                        placeholder="Email" 
-                                        defaultValue={searchEmail} 
-                                        onChange={(e) => 
-                                            setSearchEmail(e.target.value) 
-                                        } 
-                                    /> 
-                                </div> 
- 
-                                <div className="text-left mt-3"> 
-                                    <button 
-                                        className="bg-blueGray-800 text-white active:bg-blueGray
-600 text-sm uppercase px-6 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr
-1 mb-1 ease-linear transition-all duration-150" 
-                                        type="submit" 
-                                    > 
-                                        <i className="fa fa-floppy-disk"></i> 
-                                        &nbsp;Find 
-                                    </button> 
-                                </div> 
-                            </form> 
-                        </div> 
-                    </div> 
-                </div> 
-            </div> 
- 
-            <div className="flex flex-wrap "> 
-                <div className="w-full mb-12 px-4"> 
-                    <div 
-                        className={ 
-                            "relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg 
-rounded bg-white" 
-                        } 
-                    > 
-                        <div className="rounded-t mb-0 px-4 py-3 border-0"> 
-                            <div className="flex flex-wrap items-center"> 
-                                <div className="relative w-full px-4 max-w-full flex-grow flex-1"> 
-                                    <h3 className=" float-left font-semibold text-lg text
-blueGray-700 "> 
-                                        Card Tables 
-                                    </h3> 
- 
-                                    <Link 
-                                        to={"/admin/userform"} 
-                                        className="bg-blueGray-50 active:bg-blueGray-50 text
-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 shadow 
-hover:shadow-md inline-flex items-center  text-xs ease-linear transition-all duration-150 float
-right" 
-                                        type="button" 
-                                    > 
-                                        <i className="fa fa-plus"></i> 
-                                        &nbsp;Create New User 
-                                    </Link> 
-                                </div> 
-                            </div> 
-                        </div> 
-                        <div className="block w-full overflow-x-auto"> 
-                            <table className="items-center w-full bg-transparent border-collapse"> 
-                                <thead> 
-                                    <tr> 
-                                        <th 
-                                            className={ 
-                                                "px-6 align-middle border border-solid py-3 text
-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-50 text
-blueGray-500 border-blueGray-100" 
-                                            } 
-                                        > 
-                                            User Name 
-                                        </th> 
- 
-                                        <th 
-                                            className={ 
-                                                "px-6 align-middle border border-solid py-3 text
-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left bg-blueGray-50 text
-blueGray-500 border-blueGray-100" 
-                                            } 
-                                        ></th> 
-                                    </tr> 
-                                </thead> 
-                                <tbody> 
-                                    {users.map((row) => ( 
-                                        <tr key={row.id}> 
-                                            <th className="border-t-0 px-6 align-middle border-l-0 
-border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center"> 
-                                                <span 
-                                                    className={ 
-                                                        "ml-3 font-bold text-blueGray-600" 
-                                                    } 
-                                                > 
-                                                    {row.email} 
-                                                </span> 
-                                            </th> 
-                                            <td className="border-t-0 px-6 align-middle border-l-0 
-border-r-0 text-xs whitespace-nowrap p-4"> 
-                                                <button 
-                                                    className="float-right bg-blueGray-50 
-active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline
-none mr-2 mb-1 shadow hover:shadow-md inline-flex items-center  text-xs ease-linear transition-all 
-duration-150" 
-                                                    type="button" 
-                                                    onClick={() => { 
-                                                        deleteUser(row.id); 
-                                                    }} 
-                                                > 
-                                                    <i className="fa fa-trash"></i> 
-                                                    &nbsp;Delete 
-                                                </button> 
- 
-                                                <Link 
-                                                    to={ 
-                                                        "/admin/userform/" + 
-                                                        row.id 
-                                                    } 
-                                                    className="float-right bg-blueGray-50 
-active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline
-none mr-2 mb-1 shadow hover:shadow-md inline-flex items-center  text-xs ease-linear transition-all 
-duration-150" 
-                                                    type="button" 
-                                                > 
-                                                    <i className="fa fa-edit"></i> 
-                                                    &nbsp;Edit 
-                                                </Link> 
-                                            </td> 
-                                        </tr> 
-                                    ))} 
-                                </tbody> 
-                            </table> 
-                        </div> 
-                    </div> 
-                </div> 
-            </div> 
-        </> 
-    ); 
+import { React, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+
+import NotificationDropdown from "../Dropdowns/NotificationDropdown";
+import UserDropdown from "../Dropdowns/UserDropdown";
+import { useAuth } from "../../context/AuthContext";
+
+export default function Sidebar() {
+  const [collapseShow, setCollapseShow] = useState("hidden");
+  const [path, setPath] = useState("");
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setPath(location.pathname);
+  }, [location]);
+
+  const { handleLogout } = useAuth();
+
+  const logout = () => {
+    handleLogout();
+  };
+
+  return (
+    <>
+      <nav
+        className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto 
+md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center 
+justify-between relative md:w-64 z-10 py-4 px-6"
+      >
+        <div
+          className="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 
+flex flex-wrap items-center justify-between w-full mx-auto"
+        >
+          {/* Toggler */}
+          <button
+            className="cursor-pointer text-black opacity-50 md:hidden px-3 py-1 text
+xl leading-none bg-transparent rounded border border-solid border-transparent"
+            type="button"
+            onClick={() => setCollapseShow("bg-white m-2 py-3 px-6")}
+          >
+            <i className="fas fa-bars"></i>
+          </button>
+          {/* Brand */}
+          <Link
+            to="/"
+            className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block 
+whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
+          >
+            Example Template
+          </Link>
+          {/* User */}
+          <ul className="md:hidden items-center flex flex-wrap list-none">
+            <li className="inline-block relative">
+              <NotificationDropdown />
+            </li>
+            <li className="inline-block relative">
+              <UserDropdown />
+            </li>
+          </ul>
+          {/* Collapse */}
+          <div
+            className={
+              "md:flex md:flex-col md:items-stretch md:opacity-100 md:relative md:mt-4 md:shadow-none shadow absolute top-0 left-0 right-0 z-40 overflow-y-auto overflow-x-hidden h-auto items-center flex-1 rounded " +
+              collapseShow
+            }
+          >
+            {/* Collapse header */}
+            <div
+              className="md:min-w-full md:hidden block pb-4 mb-4 border-b border
+solid border-blueGray-200"
+            >
+              <div className="flex flex-wrap">
+                <div className="w-6/12">
+                  <Link
+                    to="/"
+                    className="md:block text-left md:pb-2 text-blueGray-600 
+mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
+                  >
+                    Example Template
+                  </Link>
+                </div>
+                <div className="w-6/12 flex justify-end">
+                  <button
+                    type="button"
+                    className="cursor-pointer text-black opacity-50 md:hidden 
+px-3 py-1 text-xl leading-none bg-transparent rounded border border-solid border-transparent"
+                    onClick={() => setCollapseShow("hidden")}
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            {/* Form */}
+            <form className="mt-6 mb-4 md:hidden">
+              <div className="mb-3 pt-0">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="border-0 px-3 py-2 h-12 border border
+solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base 
+leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
+                />
+              </div>
+            </form>
+
+            {/* Divider */}
+            <hr className="my-4 md:min-w-full" />
+            {/* Heading */}
+            <h6
+              className="md:min-w-full text-blueGray-500 text-xs uppercase font-bold 
+block pt-1 pb-4 no-underline"
+            >
+              Admin Layout Pages
+            </h6>
+            {/* Navigation */}
+
+            <ul className="md:flex-col md:min-w-full flex flex-col list-none">
+              <li className="items-center">
+                <Link
+                  to="/admin/dashboard"
+                  className={
+                    "text-xs uppercase py-3 font-bold block " +
+                    (path.indexOf("/admin/dashboard") !== -1
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
+                      : "text-blueGray-700 hover:text-blueGray-500")
+                  }
+                >
+                  <i
+                    className={
+                      "fas fa-tv mr-2 text-sm " +
+                      (path.indexOf("/admin/dashboard") !== -1
+                        ? "opacity-75"
+                        : "text-blueGray-300")
+                    }
+                  ></i>{" "}
+                  Dashboard
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link
+                  to="/admin/settings"
+                  className={
+                    "text-xs uppercase py-3 font-bold block " +
+                    (path.indexOf("/admin/settings") !== -1
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
+                      : "text-blueGray-700 hover:text-blueGray-500")
+                  }
+                >
+                  <i
+                    className={
+                      "fas fa-tools mr-2 text-sm " +
+                      (path.indexOf("/admin/settings") !== -1
+                        ? "opacity-75"
+                        : "text-blueGray-300")
+                    }
+                  ></i>{" "}
+                  Settings
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link
+                  to="/admin/tables"
+                  className={
+                    "text-xs uppercase py-3 font-bold block " +
+                    (path.indexOf("/admin/tables") !== -1
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
+                      : "text-blueGray-700 hover:text-blueGray-500")
+                  }
+                >
+                  <i
+                    className={
+                      "fas fa-table mr-2 text-sm " +
+                      (path.indexOf("/admin/tables") !== -1
+                        ? "opacity-75"
+                        : "text-blueGray-300")
+                    }
+                  ></i>{" "}
+                  Tables
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link
+                  to="/admin/maps"
+                  className={
+                    "text-xs uppercase py-3 font-bold block " +
+                    (path.indexOf("/admin/maps") !== -1
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
+                      : "text-blueGray-700 hover:text-blueGray-500")
+                  }
+                >
+                  <i
+                    className={
+                      "fas fa-map-marked mr-2 text-sm " +
+                      (path.indexOf("/admin/maps") !== -1
+                        ? "opacity-75"
+                        : "text-blueGray-300")
+                    }
+                  ></i>{" "}
+                  Maps
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link
+                  to="/admin/users"
+                  className={
+                    "text-xs uppercase py-3 font-bold block " +
+                    (path.indexOf("/admin/users") !== -1
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
+                      : "text-blueGray-700 hover:text-blueGray-500")
+                  }
+                >
+                  <i
+                    className={
+                      "fas fa-map-marked mr-2 text-sm " +
+                      (path.indexOf("/admin/users") !== -1
+                        ? "opacity-75"
+                        : "text-blueGray-300")
+                    }
+                  ></i>{" "}
+                  Users
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <button
+                  class="text-xs uppercase py-3 font-bold block text-lightBlue
+500 hover:text-lightBlue-600"
+                  onClick={logout}
+                >
+                  <i
+                    class="fas fa-arrow-right-from-bracket mr-2 text-sm 
+opacity-75"
+                  ></i>{" "}
+                  Logout
+                </button>
+              </li>
+            </ul>
+
+            {/* Divider */}
+            <hr className="my-4 md:min-w-full" />
+            {/* Heading */}
+            <h6
+              className="md:min-w-full text-blueGray-500 text-xs uppercase font-bold 
+block pt-1 pb-4 no-underline"
+            >
+              Auth Layout Pages
+            </h6>
+            {/* Navigation */}
+
+            <ul className="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+              <li className="items-center">
+                <Link
+                  to="/auth/login"
+                  className="text-blueGray-700 hover:text-blueGray-500 text-xs 
+uppercase py-3 font-bold block"
+                >
+                  <i
+                    className="fas fa-fingerprint text-blueGray-400 mr-2 text
+sm"
+                  ></i>{" "}
+                  Login
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link
+                  to="/auth/register"
+                  className="text-blueGray-700 hover:text-blueGray-500 text-xs 
+uppercase py-3 font-bold block"
+                >
+                  <i
+                    className="fas fa-clipboard-list text-blueGray-300 mr-2 
+text-sm"
+                  ></i>{" "}
+                  Register
+                </Link>
+              </li>
+            </ul>
+
+            {/* Divider */}
+            <hr className="my-4 md:min-w-full" />
+            {/* Heading */}
+            <h6
+              className="md:min-w-full text-blueGray-500 text-xs uppercase font-bold 
+block pt-1 pb-4 no-underline"
+            >
+              No Layout Pages
+            </h6>
+            {/* Navigation */}
+
+            <ul className="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">
+              <li className="items-center">
+                <Link
+                  to="/landing"
+                  className="text-blueGray-700 hover:text-blueGray-500 text-xs 
+uppercase py-3 font-bold block"
+                >
+                  <i
+                    className="fas fa-newspaper text-blueGray-400 mr-2 text
+sm"
+                  ></i>{" "}
+                  Landing Page
+                </Link>
+              </li>
+
+              <li className="items-center">
+                <Link
+                  to="/profile"
+                  className="text-blueGray-700 hover:text-blueGray-500 text-xs 
+uppercase py-3 font-bold block"
+                >
+                  <i
+                    className="fas fa-user-circle text-blueGray-400 mr-2 text
+sm"
+                  ></i>{" "}
+                  Profile Page
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
 }

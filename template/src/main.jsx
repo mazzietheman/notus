@@ -12,13 +12,14 @@ import Tables from "./pages/admin/tables";
 import Maps from "./pages/admin/maps";
 import Users from "./pages/admin/users";
 import UserForm from "./pages/admin/userForm";
-
 import Auth from "./layouts/Auth";
 import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
-
 import Landing from "./pages/landing";
 import Profile from "./pages/profile";
+import { AuthProvider } from "./context/AuthContext";
+import { ProtectedRoute } from "./ProtectedRoute";
+import ProfileForm from "./pages/profileForm";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,11 @@ const router = createBrowserRouter([
 
   {
     path: "admin",
-    element: <Admin />,
+    element: (
+      <ProtectedRoute>
+        <Admin />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "dashboard",
@@ -85,9 +90,14 @@ const router = createBrowserRouter([
     path: "profile",
     element: <Profile />,
   },
+  {
+    path: "profile_form",
+  },
+  element,
+  <ProfileForm />,
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <AuthProvider>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </AuthProvider>
 );

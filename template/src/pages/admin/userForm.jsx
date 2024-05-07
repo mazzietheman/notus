@@ -9,6 +9,7 @@ export default function UserForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState("admin");
 
   const getUser = async () => {
     if (id != "" && id !== undefined) {
@@ -16,6 +17,7 @@ export default function UserForm() {
         .get(`${baseUrl}/users/row/${id}`)
         .then((res) => {
           setEmail(res.data.row.email);
+          setUserType(res.data.row.user_type);
         })
         .catch((error) => {
           alert("Network error");
@@ -35,6 +37,7 @@ export default function UserForm() {
     formData.append("userId", id);
     formData.append("email", email);
     formData.append("password", password);
+    formData.append("user_type", userType);
     axios
       .post(`${baseUrl}/users/save`, formData)
       .then(() => {
@@ -44,6 +47,12 @@ export default function UserForm() {
         console.error("Error sending data: ", error);
       });
   };
+
+  const userTypeOptions = [
+    { value: "admin", label: "Admin" },
+    { value: "buyer", label: "Buyer" },
+  ];
+
   return (
     <>
       <div className="flex flex-wrap mt-4">
@@ -98,6 +107,28 @@ transition-all duration-150"
                     placeholder="Password"
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                </div>
+
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-blueGray-600 text-xs 
+font-bold mb-2"
+                  >
+                    User Type {userType}
+                  </label>
+
+                  <select
+                    value={userType}
+                    onChange={(e) => setUserType(e.target.value)}
+                    name="userType"
+                    className="border-0 px-3 py-3 placeholder-blueGray-300 
+text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear 
+transition-all duration-150"
+                  >
+                    {userTypeOptions.map((opt) => (
+                      <option value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="text-left mt-6">
